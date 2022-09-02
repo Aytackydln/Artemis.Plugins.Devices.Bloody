@@ -6,6 +6,5 @@
   "Repository":  "https://github.com/Aytackydln/Artemis.Plugins.Devices.Bloody",
   "Author": "Aytackydln",
   "Version": "0.0.1.0",
-  "Main": "Artemis.Plugins.Devices.Bloody.dll",
-  "Platforms":  "Windows"
+  "Main": "Artemis.Plugins.Devices.Bloody.dll"
 }
