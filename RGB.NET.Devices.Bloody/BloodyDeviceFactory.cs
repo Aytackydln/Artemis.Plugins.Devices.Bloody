@@ -6,63 +6,70 @@ using RGB.NET.Devices.Bloody.Core;
 using RGB.NET.Devices.Bloody.Mouse;
 using RGB.NET.Devices.Bloody.Mousepad;
 
-namespace RGB.NET.Devices.Bloody
+namespace RGB.NET.Devices.Bloody;
+
+public class BloodyDeviceFactory : AbstractRGBDeviceProvider
 {
-    public class BloodyDeviceFactory : AbstractRGBDeviceProvider
+    public static BloodyDeviceFactory Instance { get; } = new();
+
+    public BloodyDeviceFactory() : base(0.2)
     {
-        private static BloodyDeviceFactory _instance;
-        public static BloodyDeviceFactory Instance => _instance ??= new BloodyDeviceFactory();
-        
-        private const int VendorId = 0x09DA;
+    }
 
-        private readonly Dictionary<PeripheralType, BloodyDeviceInfo> _deviceInfos = new()
-            {
-                {PeripheralType.Mouse, new BloodyMouseInfo()},
-                {PeripheralType.Mousepad, new BloodyMousepadInfo()},
-            };
+    private readonly Dictionary<PeripheralType, BloodyDeviceInfo> _deviceInfos = new()
+    {
+        { PeripheralType.Mouse, new BloodyMouseInfo() },
+        { PeripheralType.Mousepad, new BloodyMousepadInfo() },
+    };
+    
+    
 
-        protected override void InitializeSDK()
+    protected override void InitializeSDK()
+    {
+        // nothing
+    }
+
+    protected override IEnumerable<IRGBDevice> LoadDevices()
+    {
+        foreach (int productId in BloodyConstants.DeviceIds.Keys)
         {
-            // nothing
+            if (Initialize(productId, out var dev))
+            {
+                yield return dev;
+            }
         }
 
-        protected override IEnumerable<IRGBDevice> LoadDevices()
-        {
-            List<BloodyPeripheral> devices = new List<BloodyPeripheral>();
-            foreach (int productId in BloodyConstants.DeviceIds.Keys)
-            {
-                if (Initialize(productId, out var dev))
-                {
-                    devices.Add(dev);
-                }
-            }
+        //HidSharp.DeviceList.Local.Changed += LocalOnChanged;
+    }
 
-            return devices;
+    private void LocalOnChanged(object sender, DeviceListChangedEventArgs e)
+    {
+        //e.
+    }
+
+    private bool Initialize(int productId, out BloodyPeripheral peripheral)
+    {
+        var devices =
+            DeviceList.Local.GetHidDevices(BloodyConstants.VendorId, productId); //Find device with given VID PID
+
+        try
+        {
+            HidDevice ctrlDevice = devices.First(d => d.GetMaxFeatureReportLength() > 50);
+
+            HidStream ctrlStream = ctrlDevice.Open();
+            PeripheralType type = BloodyConstants.DeviceIds.GetValueOrDefault(productId, PeripheralType.Unknown);
+            BloodyDevice bd = new BloodyDevice(ctrlStream);
+            BloodyPeripheral bp = new BloodyPeripheral(
+                _deviceInfos[type],
+                new BloodyUpdateQueue(GetUpdateTrigger(), bd)
+            );
+            peripheral = bp;
+            return true;
         }
-
-        private bool Initialize(int productId, out BloodyPeripheral peripheral)
+        catch
         {
-            var devices = DeviceList.Local.GetHidDevices(VendorId, productId); //Find device with given VID PID
-
-            try
-            {
-                HidDevice ctrlDevice = devices.First(d => d.GetMaxFeatureReportLength() > 50);
-
-                HidStream ctrlStream = ctrlDevice.Open();
-                PeripheralType type = BloodyConstants.DeviceIds.GetValueOrDefault(productId, PeripheralType.Unknown);
-                BloodyDevice bd = new BloodyDevice(ctrlStream);
-                BloodyPeripheral bp = new BloodyPeripheral(
-                    _deviceInfos[type],
-                    new BloodyUpdateQueue(GetUpdateTrigger(), bd)
-                );
-                peripheral = bp;
-                return true;
-            }
-            catch
-            {
-                peripheral = null;
-                return false;
-            }
+            peripheral = null;
+            return false;
         }
     }
 }

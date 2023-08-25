@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="ArtemisRGB.Core" Version="1.2023.821.1" />
       <PackageReference Include="ArtemisRGB.Plugins.BuildTask" Version="1.1.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -12,14 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Artemis.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\Artemis\src\Artemis.Core\bin\net6.0\Artemis.Core.dll</HintPath>
-        <Private>false</Private>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\RGB.NET.Devices.Bloody\RGB.NET.Devices.Bloody.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+        <PackageReference Include="ArtemisRGB.Plugins.BuildTask" Version="1.1.0" />
+    </ItemGroup>
 </Project>

@@ -1,20 +1,18 @@
-﻿using System;
-using Artemis.Core;
+﻿using Artemis.Core;
 
-namespace Artemis.Plugins.Devices.Bloody
+namespace Artemis.Plugins.Devices.Bloody;
+
+public class Bootstrapper : PluginBootstrapper
 {
-    public class Bootstrapper : PluginBootstrapper
+    public override void OnPluginLoaded(Plugin plugin)
     {
-        public override void OnPluginLoaded(Plugin plugin)
-        {
-        }
+    }
 
-        public override void OnPluginEnabled(Plugin plugin)
-        {
-        }
+    public override void OnPluginEnabled(Plugin plugin)
+    {
+    }
 
-        public override void OnPluginDisabled(Plugin plugin)
-        {
-        }
+    public override void OnPluginDisabled(Plugin plugin)
+    {
     }
 }

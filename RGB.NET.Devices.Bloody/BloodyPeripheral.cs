@@ -1,31 +1,30 @@
 ﻿using RGB.NET.Core;
 
-namespace RGB.NET.Devices.Bloody
+namespace RGB.NET.Devices.Bloody;
+
+public sealed class BloodyPeripheral : AbstractRGBDevice<BloodyDeviceInfo>
 {
-    public sealed class BloodyPeripheral : AbstractRGBDevice<BloodyDeviceInfo>
-    {
-        private readonly BloodyDeviceInfo _deviceInfo;
+    private readonly BloodyDeviceInfo _deviceInfo;
         
-        internal BloodyPeripheral(BloodyDeviceInfo deviceInfo, IUpdateQueue updateQueue)
-            : base(deviceInfo, updateQueue)
-        {
-            _deviceInfo = deviceInfo;
-            InitializeLayout();
-        }
+    internal BloodyPeripheral(BloodyDeviceInfo deviceInfo, IUpdateQueue updateQueue)
+        : base(deviceInfo, updateQueue)
+    {
+        _deviceInfo = deviceInfo;
+        InitializeLayout();
+    }
 
-        private void InitializeLayout()
+    private void InitializeLayout()
+    {
+        int x = 0;
+        foreach (var key in _deviceInfo.KeyMapping.Keys)
         {
-            int x = 0;
-            foreach (var key in _deviceInfo.KeyMapping.Keys)
+            if (!_deviceInfo.KeyMapping.TryGetValue(key, out LedId ledId))
             {
-                if (!_deviceInfo.KeyMapping.TryGetValue(key, out LedId ledId))
-                {
-                    continue;
-                }
-
-                AddLed(ledId, new Point(x, 0), new Size(19), key);
-                x += 20;
+                continue;
             }
+
+            AddLed(ledId, new Point(x, 0), new Size(19), key);
+            x += 20;
         }
     }
 }

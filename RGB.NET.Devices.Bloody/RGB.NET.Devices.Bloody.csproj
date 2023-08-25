@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="HidSharp" Version="2.1.0" />
-      <PackageReference Include="RGB.NET.Core" Version="1.0.0-prerelease.11" />
+      <PackageReference Include="RGB.NET.Core" Version="2.0.0-prerelease.83" />
     </ItemGroup>
 
 </Project>
