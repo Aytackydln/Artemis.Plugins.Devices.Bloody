@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ArtemisRGB.Core" Version="1.2023.827.2" />
+      <PackageReference Include="ArtemisRGB.Core" Version="1.2023.821.1" />
     </ItemGroup>
 
     <ItemGroup>

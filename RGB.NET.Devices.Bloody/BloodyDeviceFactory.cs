@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HidSharp;
 using RGB.NET.Core;
 using RGB.NET.Devices.Bloody.Core;
@@ -10,9 +12,10 @@ namespace RGB.NET.Devices.Bloody;
 
 public class BloodyDeviceFactory : AbstractRGBDeviceProvider
 {
-    public static BloodyDeviceFactory Instance { get; } = new();
+    private static Lazy<BloodyDeviceFactory> _lazyInstance = new(() => new BloodyDeviceFactory(),LazyThreadSafetyMode.ExecutionAndPublication);
+    public static BloodyDeviceFactory Instance => _lazyInstance.Value;
 
-    public BloodyDeviceFactory() : base(0.2)
+    private BloodyDeviceFactory() : base(0.2)
     {
     }
 
@@ -21,8 +24,6 @@ public class BloodyDeviceFactory : AbstractRGBDeviceProvider
         { PeripheralType.Mouse, new BloodyMouseInfo() },
         { PeripheralType.Mousepad, new BloodyMousepadInfo() },
     };
-    
-    
 
     protected override void InitializeSDK()
     {
@@ -31,20 +32,13 @@ public class BloodyDeviceFactory : AbstractRGBDeviceProvider
 
     protected override IEnumerable<IRGBDevice> LoadDevices()
     {
-        foreach (int productId in BloodyConstants.DeviceIds.Keys)
+        foreach (var productId in BloodyConstants.DeviceIds.Keys)
         {
             if (Initialize(productId, out var dev))
             {
                 yield return dev;
             }
         }
-
-        //HidSharp.DeviceList.Local.Changed += LocalOnChanged;
-    }
-
-    private void LocalOnChanged(object sender, DeviceListChangedEventArgs e)
-    {
-        //e.
     }
 
     private bool Initialize(int productId, out BloodyPeripheral peripheral)
@@ -71,5 +65,11 @@ public class BloodyDeviceFactory : AbstractRGBDeviceProvider
             peripheral = null;
             return false;
         }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        _lazyInstance = new(() => new BloodyDeviceFactory(),LazyThreadSafetyMode.ExecutionAndPublication);
     }
 }
