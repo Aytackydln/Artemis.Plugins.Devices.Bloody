@@ -9,8 +9,9 @@ public static class BloodyConstants
     internal static readonly Dictionary<int, PeripheralType> DeviceIds = new()
     {
         [0x37EA] = PeripheralType.Mouse,        //W60 - Pro
-        [0x3666] = PeripheralType.Mouse,        //W60 - Max?
-        [0x527A] = PeripheralType.Mouse,        //W60 - Max?
+        [0x3666] = PeripheralType.Mouse,        //W60 - Max
+        [0x527A] = PeripheralType.Mouse,        //W60 - Max
+        [0x17B2] = PeripheralType.Mouse,        //W60 - Max
         [0xFA60] = PeripheralType.Mousepad,     //MP-50RS
         [0x356E] = PeripheralType.Mousepad,     //MP-50R
     };
