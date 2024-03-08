@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Bloody.NET;
 using HidSharp;
 using RGB.NET.Core;
 using RGB.NET.Devices.Bloody.Core;
+using RGB.NET.Devices.Bloody.Keyboard;
 using RGB.NET.Devices.Bloody.Mouse;
 using RGB.NET.Devices.Bloody.Mousepad;
 
@@ -39,6 +41,11 @@ public class BloodyDeviceFactory : AbstractRGBDeviceProvider
                 yield return dev;
             }
         }
+        var keyboard = BloodyKeyboard.Initialize();
+        if (keyboard != null)
+        {
+            yield return new BloodyRgbNetKeyboard(new BloodyKeyboardInfo(), new BloodyKeyboardUpdateQueue(GetUpdateTrigger(), keyboard));
+        }
     }
 
     private bool Initialize(int productId, out BloodyPeripheral peripheral)
@@ -48,14 +55,14 @@ public class BloodyDeviceFactory : AbstractRGBDeviceProvider
 
         try
         {
-            HidDevice ctrlDevice = devices.First(d => d.GetMaxFeatureReportLength() > 50);
+            var ctrlDevice = devices.First(d => d.GetMaxFeatureReportLength() > 50);
 
-            HidStream ctrlStream = ctrlDevice.Open();
-            PeripheralType type = BloodyConstants.DeviceIds.GetValueOrDefault(productId, PeripheralType.Unknown);
-            BloodyDevice bd = new BloodyDevice(ctrlStream);
-            BloodyPeripheral bp = new BloodyPeripheral(
+            var ctrlStream = ctrlDevice.Open();
+            var type = BloodyConstants.DeviceIds.GetValueOrDefault(productId, PeripheralType.Unknown);
+            var bd = new BloodyMouseDevice(ctrlStream);
+            var bp = new BloodyPeripheral(
                 _deviceInfos[type],
-                new BloodyUpdateQueue(GetUpdateTrigger(), bd)
+                new BloodyMouseUpdateQueue(GetUpdateTrigger(), bd)
             );
             peripheral = bp;
             return true;

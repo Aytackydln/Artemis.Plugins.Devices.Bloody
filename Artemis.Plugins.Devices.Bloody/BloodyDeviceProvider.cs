@@ -6,12 +6,12 @@ namespace Artemis.Plugins.Devices.Bloody;
 
 public class BloodyDeviceProvider : DeviceProvider
 {
-    private readonly IRgbService _rgbService;
+    private readonly IDeviceService _rgbService;
 
-    public BloodyDeviceProvider(IRgbService rgbService)
+    public BloodyDeviceProvider(IDeviceService rgbService)
     {
         _rgbService = rgbService;
-        CreateMissingLedsSupported = false;
+        CreateMissingLedsSupported = true;
         RemoveExcessiveLedsSupported = true;
 
         CanDetectLogicalLayout = false;
@@ -20,12 +20,12 @@ public class BloodyDeviceProvider : DeviceProvider
 
     public override void Enable()
     {
-        _rgbService.AddDeviceProvider(RgbDeviceProvider);
+        _rgbService.AddDeviceProvider(this);
     }
 
     public override void Disable()
     {
-        _rgbService.RemoveDeviceProvider(RgbDeviceProvider);
+        _rgbService.RemoveDeviceProvider(this);
         RgbDeviceProvider.Dispose();
     }
 

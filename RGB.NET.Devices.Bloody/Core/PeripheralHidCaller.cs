@@ -5,30 +5,24 @@ using RGB.NET.Core;
 
 namespace RGB.NET.Devices.Bloody.Core;
 
-public class PeripheralCaller
+public class PeripheralHidCaller(HidStream ctrlStream)
 {
-    private static readonly byte[] ColorPacketHeader = {0x07, 0x03, 0x06, 0x02, 0x00, 0x00, 0x00, 0x00};
+    private static readonly byte[] ColorPacketHeader = [0x07, 0x03, 0x06, 0x02, 0x00, 0x00, 0x00, 0x00];
 
     private readonly byte[] _keyColors = new byte[16 * 3];
-    private readonly HidStream _ctrlStream;
-
-    public PeripheralCaller(HidStream ctrlStream)
-    {
-        _ctrlStream = ctrlStream;
-    }
 
     public void SetDirect()
     {
-        byte[] a = {0x07, 0x03, 0x06, 0x01};
-        byte[] b = {0x07, 0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01};
+        byte[] a = [0x07, 0x03, 0x06, 0x01];
+        byte[] b = [0x07, 0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01];
 
-        byte[] packet = new byte[64];
+        var packet = new byte[64];
         try
         {
             a.CopyTo(packet, 0);
-            _ctrlStream.SetFeature(packet);
+            ctrlStream.SetFeature(packet);
             b.CopyTo(packet, 0);
-            _ctrlStream.SetFeature(packet);
+            ctrlStream.SetFeature(packet);
         }
         catch
         {
@@ -38,7 +32,7 @@ public class PeripheralCaller
 
     public void Disconnect()
     {
-        _ctrlStream?.Close();
+        ctrlStream?.Close();
     }
 
     public void SetKeyColor(int key, Color clr)
@@ -57,8 +51,8 @@ public class PeripheralCaller
 
     private void SetColors(Dictionary<int, Color> keyColors)
     {
-        foreach (var key in keyColors)
-            SetKeyColor(key.Key, key.Value);
+        foreach (var (key, color) in keyColors)
+            SetKeyColor(key, color);
     }
 
     private void WriteColorBuffer()
@@ -68,7 +62,7 @@ public class PeripheralCaller
         {
             ColorPacketHeader.CopyTo(packet, 0);
             Array.Copy(_keyColors, 0, packet, 8, 16 * 3);
-            _ctrlStream.SetFeature(packet);
+            ctrlStream.SetFeature(packet);
         }
         catch
         {

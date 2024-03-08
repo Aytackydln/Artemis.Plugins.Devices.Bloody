@@ -1,10 +1,10 @@
 {
   "Guid": "9aafb8e4-5af7-44c4-ae98-ace94103c27f",
   "Api":  "1.0",
-  "Name": "Artemis.Plugins.Devices.Bloody",
-  "Description": "Bloody device support.",
+  "Name": "Bloody Devices",
+  "Description": "Bloody device support for certain models.",
   "Repository":  "https://github.com/Aytackydln/Artemis.Plugins.Devices.Bloody",
   "Author": "Aytackydln",
-  "Version": "0.0.4.0",
+  "Version": "0.1.0.0",
   "Main": "Artemis.Plugins.Devices.Bloody.dll"
 }

@@ -15,10 +15,10 @@ public sealed class BloodyPeripheral : AbstractRGBDevice<BloodyDeviceInfo>
 
     private void InitializeLayout()
     {
-        int x = 0;
+        var x = 0;
         foreach (var key in _deviceInfo.KeyMapping.Keys)
         {
-            if (!_deviceInfo.KeyMapping.TryGetValue(key, out LedId ledId))
+            if (!_deviceInfo.KeyMapping.TryGetValue(key, out var ledId))
             {
                 continue;
             }

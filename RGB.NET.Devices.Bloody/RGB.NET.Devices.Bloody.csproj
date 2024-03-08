@@ -1,12 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <WarningsAsErrors>CA2244</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="HidSharp" Version="2.1.0" />
-      <PackageReference Include="RGB.NET.Core" Version="2.0.0-prerelease.111" />
+        <Reference Include="Bloody.NET">
+            <HintPath>.\Bloody.NET.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="RGB.NET.Core" Version="2.0.4-prerelease.16"/>
+        <PackageReference Include="RGB.NET.HID" Version="2.0.4-prerelease.16"/>
     </ItemGroup>
 
 </Project>
